@@ -1,0 +1,25 @@
+{
+  "name": "cpus-mc-mem",
+  "version": "1.0.0",
+  "description": "CPU + Memory controller + Memory",
+  "main": "index.ts",
+  "scripts": {
+    "test": "ts-node test.ts"
+  },
+  "keywords": [
+    "typescript",
+    "cpu",
+    "memory",
+    "controller"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sergeiterehov/cpus-mc-mem.git"
+  },
+  "author": "Sergei Terehov",
+  "license": "MIT",
+  "dependencies": {
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.1"
+  }
+}
