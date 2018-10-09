@@ -1,20 +1,20 @@
-import { CPU, OpCode } from "./cpu";
+import { CPU } from "./cpu";
 import { Memory } from "./memory";
 import { MemoryController } from "./memoryController";
+import { dump } from "./test.dump";
 
-const cpu = new CPU();
-const mem = new Memory([
-    /* mov [20], 123 */ OpCode.MOV_Ax0_x1, 20, 123,
-    /* mov r0, [20] */ OpCode.MOV_R0_Ax0, 20,
-    /* add 10 */ OpCode.ADD_x0, 10,
-    /* mov [21], r0 */ OpCode.MOV_Ax0_R0, 21,
+const cpu0 = new CPU(0);
+const cpu1 = new CPU(1);
 
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-]);
-const mc = new MemoryController(mem, cpu);
+const mem = new Memory(dump.build());
+
+const mc = new MemoryController(mem, cpu0, cpu1);
+
+console.log('Source memory:', mem.dump().join());
 
 for (let i = 0; i < 100; i++) {
-    cpu.clk();
+    cpu0.clk();
+    cpu1.clk();
     mc.clk();
     mem.clk();
 }

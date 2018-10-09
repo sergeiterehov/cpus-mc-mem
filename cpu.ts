@@ -4,14 +4,21 @@ enum CPUState {
     Start,
     ReadInstruction,
     Execute,
+    Halt,
 }
 
 export enum OpCode {
     NOP,
+    HLT,
     MOV_Ax0_x1,
     MOV_Ax0_R0,
+    MOV_AR0_R1, // todo
+    MOV_Rx0_R0, // todo
+    MOV_R0_Rx0, // todo
+    MOV_R0_x0,
     MOV_R0_Ax0,
     ADD_x0,
+    JMP_x0,
 }
 
 export class CPU implements IMemoryDevice, ISyncDevice {
@@ -37,12 +44,15 @@ export class CPU implements IMemoryDevice, ISyncDevice {
     private instr : number = 0;
     private instr_i : number = 0;
 
-    constructor() {
+    constructor(unitNumber : number) {
         this.mwait = false;
+        this.ip = unitNumber * 4;
     }
 
     public clk() {
         switch (this.state) {
+            case CPUState.Halt:
+                break;
             case CPUState.Start:
                 this.state = CPUState.ReadInstruction;
                 break;
@@ -65,10 +75,13 @@ export class CPU implements IMemoryDevice, ISyncDevice {
                 break;
             case CPUState.Execute:
                 if (this.instr === OpCode.NOP) this.inst_nop();
-                else if (this.instr === OpCode.MOV_Ax0_x1) this.inst_mov_ab0_b1();
-                else if (this.instr === OpCode.MOV_Ax0_R0) this.inst_mov_ab0_r0();
-                else if (this.instr === OpCode.MOV_R0_Ax0) this.inst_mov_r0_ab0();
-                else if (this.instr === OpCode.ADD_x0) this.inst_add_b0();
+                if (this.instr === OpCode.HLT) this.inst_hlt();
+                else if (this.instr === OpCode.MOV_Ax0_x1) this.inst_mov_ax0_x1();
+                else if (this.instr === OpCode.MOV_Ax0_R0) this.inst_mov_ax0_r0();
+                else if (this.instr === OpCode.MOV_R0_x0) this.inst_mov_r0_x0();
+                else if (this.instr === OpCode.MOV_R0_Ax0) this.inst_mov_r0_ax0();
+                else if (this.instr === OpCode.ADD_x0) this.inst_add_x0();
+                else if (this.instr === OpCode.JMP_x0) this.inst_jmp_x0();
                 break;
         }
     }
@@ -81,9 +94,16 @@ export class CPU implements IMemoryDevice, ISyncDevice {
     }
 
     /**
-     * [b0] = b1
+     * Halt
      */
-    private inst_mov_ab0_b1()
+    private inst_hlt() {
+        this.state = CPUState.Halt;
+    }
+
+    /**
+     * [x0] = x1
+     */
+    private inst_mov_ax0_x1()
     {
         switch (this.instr_i) {
             case 0:
@@ -130,9 +150,9 @@ export class CPU implements IMemoryDevice, ISyncDevice {
     }
 
     /**
-     * [b0] = r0
+     * [x0] = r0
      */
-    private inst_mov_ab0_r0() {
+    private inst_mov_ax0_r0() {
         switch (this.instr_i) {
             case 0:
                 this.maddr = this.ip;
@@ -173,9 +193,46 @@ export class CPU implements IMemoryDevice, ISyncDevice {
     }
 
     /**
-     * r0 = [b0]
+     * r0 = x0
      */
-    private inst_mov_r0_ab0() {
+    private inst_mov_r0_x0() {
+        switch (this.instr_i) {
+            case 0:
+                this.maddr = this.ip;
+                this.mread = true;
+                this.mwait = true;
+
+                this.ip++;
+
+                this.instr_i++;
+                break;
+            case 1:
+                if (this.mdone) {
+                    this.ix[0] = this.mdata;
+
+                    this.mwait = false;
+                    this.mdone = false;
+
+                    this.instr_i++;
+                }
+                break;
+            case 2:
+                if (this.mdone) {
+                    this.rx[0] = this.mdata;
+
+                    this.mwait = false;
+                    this.mdone = false;
+
+                    this.state = CPUState.ReadInstruction;
+                }
+                break;
+        }
+    }
+
+    /**
+     * r0 = [x0]
+     */
+    private inst_mov_r0_ax0() {
         switch (this.instr_i) {
             case 0:
                 this.maddr = this.ip;
@@ -217,9 +274,9 @@ export class CPU implements IMemoryDevice, ISyncDevice {
     }
 
     /**
-     * r0 = r0 + b0
+     * r0 = r0 + x0
      */
-    private inst_add_b0() {
+    private inst_add_x0() {
         switch (this.instr_i) {
             case 0:
                 this.maddr = this.ip;
@@ -233,6 +290,33 @@ export class CPU implements IMemoryDevice, ISyncDevice {
             case 1:
                 if (this.mdone) {
                     this.rx[0] += this.mdata;
+
+                    this.mwait = false;
+                    this.mdone = false;
+
+                    this.state = CPUState.ReadInstruction;
+                }
+                break;
+        }
+    }
+
+    /**
+     * ip = x0
+     */
+    private inst_jmp_x0() {
+        switch (this.instr_i) {
+            case 0:
+                this.maddr = this.ip;
+                this.mread = true;
+                this.mwait = true;
+
+                this.ip++;
+
+                this.instr_i++;
+                break;
+            case 1:
+                if (this.mdone) {
+                    this.ip = this.mdata;
 
                     this.mwait = false;
                     this.mdone = false;
