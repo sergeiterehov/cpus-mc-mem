@@ -6,6 +6,14 @@ enum CPUState {
     Execute,
 }
 
+export enum OpCode {
+    NOP,
+    MOV_AB0_B1,
+    MOV_AB0_R0,
+    MOV_R0_AB0,
+    ADD_B0,
+}
+
 export class CPU implements IMemoryDevice, ISyncDevice {
     public maddr : number = 0;
     public mdata : number = 0;
@@ -56,11 +64,11 @@ export class CPU implements IMemoryDevice, ISyncDevice {
                 }
                 break;
             case CPUState.Execute:
-                if (this.instr === 0x00) this.inst_nop();
-                else if (this.instr === 0x01) this.inst_mov_ab0_b1();
-                else if (this.instr === 0x02) this.inst_mov_ab0_r0();
-                else if (this.instr === 0x03) this.inst_mov_r0_ab0();
-                else if (this.instr === 0x04) this.inst_add_b0();
+                if (this.instr === OpCode.NOP) this.inst_nop();
+                else if (this.instr === OpCode.MOV_AB0_B1) this.inst_mov_ab0_b1();
+                else if (this.instr === OpCode.MOV_AB0_R0) this.inst_mov_ab0_r0();
+                else if (this.instr === OpCode.MOV_R0_AB0) this.inst_mov_r0_ab0();
+                else if (this.instr === OpCode.ADD_B0) this.inst_add_b0();
                 break;
         }
     }
