@@ -81,7 +81,7 @@ export class MemoryHelper {
                     '                                      '
                 ).slice(-(8 + 4 * (address - i)));
                 
-                console.log(`\x1b[36m${offset}^ ${key}\x1b[34m [${address}] = ${dump[address]}\x1b[0m`);
+                console.log(`\x1b[36m${offset}^ ${key}\x1b[34m [${address}]\x1b[0m`);
             });
         }
     }
