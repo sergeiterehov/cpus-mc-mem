@@ -5,7 +5,7 @@
 This is CISC architecture. Uses 1 cell for instruction code, but it can be extended and added.
 
 Processor have 16 common registers. Executing instruction is multi-tick operation.
-Each processore have personal number. That number defines value of instruction pointer by follow method: `ip = 4 * unitNumber`.
+Each processore have personal number. That number defines value of instruction pointer by follow method: `ip = 4 * unitNumber`. Also `r15 = unitNumber`.
 
 ## Memory controller
 

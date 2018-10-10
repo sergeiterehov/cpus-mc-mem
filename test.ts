@@ -12,7 +12,7 @@ const mc = new MemoryController(mem, cpu0, cpu1);
 
 console.log('Source memory:', mem.dump().join());
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 999; i++) {
     cpu0.clk();
     cpu1.clk();
     mc.clk();
