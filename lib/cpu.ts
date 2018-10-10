@@ -9,7 +9,9 @@ enum CPUState {
 
 export enum OpCode {
     NOP,
+
     HLT,
+
     MOV_Ax0_x1,
     MOV_Ax0_R0,
     MOV_AR0_R1,
@@ -17,8 +19,14 @@ export enum OpCode {
     MOV_R0_Rx0,
     MOV_R0_x0,
     MOV_R0_Ax0,
-    ADD_R0_x0,
+
+    ADD_x0,
+    SUB_x0, // todo
+
     JMP_x0,
+    JMP, // todo
+    JIZ_x0, // todo
+    JIG_x0, // todo
 }
 
 export class CPU implements IMemoryDevice, ISyncDevice {
@@ -85,7 +93,7 @@ export class CPU implements IMemoryDevice, ISyncDevice {
                 else if (this.instr === OpCode.MOV_R0_Rx0) this.isnt_mov_r0_rx0();
                 else if (this.instr === OpCode.MOV_R0_x0) this.inst_mov_r0_x0();
                 else if (this.instr === OpCode.MOV_R0_Ax0) this.inst_mov_r0_ax0();
-                else if (this.instr === OpCode.ADD_R0_x0) this.inst_add_x0();
+                else if (this.instr === OpCode.ADD_x0) this.inst_add_x0();
                 else if (this.instr === OpCode.JMP_x0) this.inst_jmp_x0();
                 break;
         }
