@@ -48,4 +48,41 @@ export class MemoryHelper {
 
         return mem;
     }
+
+    public log(dump : number[], diff : number[]) {
+        for (let i = 0; i < dump.length; i += 16) {
+            console.log(
+                `\x1b[36m${`            ${i} : `.slice(-8)}\x1b[0m` +
+                dump.slice(i, i + 16)
+                    .map((n, offset) => {
+                        let str = ('000' + n.toString(10)).slice(-3);
+
+                        if (diff && dump[i + offset] !== diff[i + offset]) {
+                            str = `\x1b[41;1m${str}\x1b[0m`;
+                        }
+
+                        return str;
+                    })
+                    .join(" ") +
+                `\x1b[36m : ${i + 16 - 1}\x1b[0m`
+            );
+
+            Object.keys(this.links).forEach((key) => {
+                const address = this.links[key];
+
+                if (! (address >= i && address < (i + 16))) {
+                    return;
+                }
+
+                const offset = (
+                    '                                      ' +
+                    '                                      ' +
+                    '                                      ' +
+                    '                                      '
+                ).slice(-(8 + 4 * (address - i)));
+                
+                console.log(`\x1b[36m${offset}^ ${key}\x1b[34m [${address}] = ${dump[address]}\x1b[0m`);
+            });
+        }
+    }
 }

@@ -10,7 +10,7 @@ const mem = new Memory(dump.build());
 
 const mc = new MemoryController(mem, cpu0, cpu1);
 
-console.log('Source memory:', mem.dump().join());
+const diff = mem.dump();
 
 for (let i = 0; i < 999; i++) {
     cpu0.clk();
@@ -19,4 +19,4 @@ for (let i = 0; i < 999; i++) {
     mem.clk();
 }
 
-console.log('Result memory:', mem.dump().join());
+dump.log(mem.dump(), diff);

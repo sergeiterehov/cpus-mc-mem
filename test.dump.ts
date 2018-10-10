@@ -15,7 +15,7 @@ dump
     .link('entry', [
         OpCode.MOV_Rx0_R0, 2, // r2 = r0
         OpCode.MOV_R0_Rx0, 15, // r0 = r15
-        OpCode.ADD_x0, 1, // r0 += 1
+        OpCode.ADD_R0_x0, 1, // r0 += 1
         OpCode.MOV_Rx0_R0, 1, // r1 = r0
         OpCode.MOV_R0_Rx0, 2, // r0 = r2
 
