@@ -1,5 +1,5 @@
-import { MemoryHelper } from "./memoryHelper";
-import { OpCode } from "./cpu";
+import { MemoryHelper } from "./helpers/memoryHelper";
+import { OpCode } from "./lib/cpu";
 
 export const dump = MemoryHelper.init(64);
 

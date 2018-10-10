@@ -1,6 +1,6 @@
-import { CPU } from "./cpu";
-import { Memory } from "./memory";
-import { MemoryController } from "./memoryController";
+import { CPU } from "./lib/cpu";
+import { Memory } from "./lib/memory";
+import { MemoryController } from "./lib/memoryController";
 import { dump } from "./test.dump";
 
 const cpu0 = new CPU(0);
